@@ -12,8 +12,8 @@ jobs:
     steps:
       - name: Ping fedorablv.ar
         run: |
-          echo "Haciendo ping a https://fedorablv.ar ..."
-          response=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://fedorablv.ar)
+          echo "Haciendo ping a https://www.fedorablv.ar/ ..."
+          response=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://www.fedorablv.ar/)
           echo "Respuesta HTTP: $response"
           if [ "$response" -ge 200 ] && [ "$response" -lt 500 ]; then
             echo "✅ Sitio despierto (código $response)"
