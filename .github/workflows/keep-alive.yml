@@ -2,8 +2,8 @@ name: Keep Fedora Blv Alive
 
 on:
   schedule:
-    # Corre cada 30 minutos, 24/7
-    - cron: '*/30 * * * *'
+    # Corre cada 10 minutos, 24/7 (para que nunca llegue a los 15 min de inactividad que duermen el servicio)
+    - cron: '*/10 * * * *'
   workflow_dispatch: # permite tirarlo a mano desde GitHub para probar
 
 jobs:
