@@ -2,7 +2,7 @@ name: Keep Fedora Blv Alive
 
 on:
   schedule:
-    # Corre cada 10 minutos, 24/7 (para que nunca llegue a los 15 min de inactividad que duermen el servicio)
+    # Corre cada 10 minutos, 24/7
     - cron: '*/10 * * * *'
   workflow_dispatch: # permite tirarlo a mano desde GitHub para probar
 
@@ -13,10 +13,20 @@ jobs:
       - name: Ping fedorablv.ar
         run: |
           echo "Haciendo ping a https://www.fedorablv.ar/ ..."
-          response=$(curl -s -o /dev/null -w "%{http_code}" --max-time 30 https://www.fedorablv.ar/)
+          # --max-time 90: espera hasta 90 segundos por respuesta (por si el servicio estaba dormido y tarda en despertar)
+          # --retry 3: si falla, reintenta hasta 3 veces
+          # --retry-delay 10: espera 10 segundos entre reintentos
+          # --retry-all-errors: reintenta ante cualquier tipo de error, incluido timeout
+          response=$(curl -s -o /dev/null -w "%{http_code}" \
+            --max-time 90 \
+            --retry 3 \
+            --retry-delay 10 \
+            --retry-all-errors \
+            https://www.fedorablv.ar/)
           echo "Respuesta HTTP: $response"
           if [ "$response" -ge 200 ] && [ "$response" -lt 500 ]; then
             echo "✅ Sitio despierto (código $response)"
           else
             echo "⚠️ Respuesta inesperada: $response"
+            exit 1
           fi
